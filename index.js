@@ -66,6 +66,8 @@ const game = function(player1, player2){
     return {playRound}
 };
 
+const newGame = game(Player('Roland', 'X'), Player('Olga', 'O'));
+
 const view = function(){
     const body = document.querySelector('body');
     const grid = document.createElement('div');
@@ -75,27 +77,26 @@ const view = function(){
         const button = document.createElement('button');
         grid.appendChild(button);
         button.id = index;
+        button.classList.add('areaBtn');
         button.textContent = value;
+
+        button.addEventListener('click', () => {
+            console.log('clicked' + button.id);
+            newGame.playRound(button.id);
+            refresh();
+        })
     }
 
     function refresh(){
+        const areaBtns = [...document.querySelectorAll('.areaBtn')];
+        areaBtns.forEach(btn => btn.remove());
         for (let i = 0; i < boardCopy.length; i++){
             createAreaButton(i, boardCopy[i]);
         }
     }
+
     refresh();
 
     body.appendChild(grid);
 
 }();
-
-/*
-const newGame = game(Player('Roland', 'X'), Player('Olga', 'O'));
-newGame.playRound(0);
-newGame.playRound(3);
-newGame.playRound(4);
-newGame.playRound(5);
-newGame.playRound(8);
-newGame.playRound(2);
-gameboard.print();
-*/
