@@ -69,6 +69,8 @@ const game = function(){
     const playRound = function(area){
         let activeSymbol = activePlayer.getSymbol();
         gameboard.update(area, activeSymbol);
+        // necessary to only add event listeners for buttons that do not have value
+        view.refresh();
         checkVictory(activeSymbol);
         if (winner === activeSymbol){
             // IF THE ACTIVE PLAYER WON THE GAME
@@ -94,10 +96,12 @@ const view = function(){
         button.classList.add('areaBtn');
         button.textContent = value;
 
-        button.addEventListener('click', () => {
-            activeGame.playRound(button.id);
-            refresh();
-        })
+        // only add event listener to buttons that don't have value yet
+        if (button.textContent === 'E'){
+            button.addEventListener('click', () => {
+                activeGame.playRound(button.id);
+            })
+        }
     }
 
     function refresh(){
@@ -107,11 +111,11 @@ const view = function(){
         for (let i = 0; i < boardCopy.length; i++){
             createAreaButton(i, boardCopy[i]);
         }
+
     }
 
     const modal = document.querySelector('dialog');
     const modalCloseBtn = modal.querySelector('#close-modal');
-    const modalSendBtn = modal.querySelector('#submit-modal');
     const modalOpenBtn = document.querySelector('#new-game');
     const modalForm = modal.querySelector('form');
 
