@@ -19,4 +19,9 @@ const gameboard = (function(){
     return {get, update, print}
 })();
 
-gameboard.print();
+const Player = function(name, symbol){
+    const getName = () => name;
+    const getSymbol = () => symbol;
+    return {getName, getSymbol};
+}
+
