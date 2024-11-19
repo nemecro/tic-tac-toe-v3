@@ -39,10 +39,13 @@ const game = function(){
     winner = false;
     let player1, player2;
     let activePlayer;
+    let round = 1;
 
     function initPlayers(p1Input, p2Input){
         [player1, player2] = [p1Input, p2Input];
         activePlayer = player1;
+        round = 1;
+        view.newStats(activePlayer.getName(), round);
     }
 
     const checkVictory = function(symbol){
@@ -62,6 +65,8 @@ const game = function(){
                 boardCopy[victoryCondition[0]] === symbol && boardCopy[victoryCondition[1]] === symbol && boardCopy[victoryCondition[2]] === symbol
             ){
                 winner = symbol;
+            } else if (round === 9){
+                winner = 'tie';
             }
         })
     }
@@ -76,9 +81,14 @@ const game = function(){
             // IF THE ACTIVE PLAYER WON THE GAME
             gameboard.clear();
             view.openModal(true, activePlayer);
+        } else if (winner === 'tie'){
+            gameboard.clear();
+            view.openModal(true, 'tie');
         }
         // check for active player and change between rounds
         activePlayer = activePlayer === player1 ? player2 : player1;
+        round++;
+        view.newStats(activePlayer.getName(), round);
     }
 
     return {playRound, initPlayers}
@@ -87,6 +97,13 @@ const game = function(){
 const view = function(){
     const body = document.querySelector('body');
     const grid = document.createElement('div');
+    const activePlayerPara = body.querySelector('#player');
+    const currentRound = body.querySelector('#round');
+
+    function newStats(player, round){
+        currentRound.textContent = `Current round: ${round}`;
+        activePlayerPara.textContent = `${player}'s turn`;
+    }
 
     function createAreaButton(index, value){
         const button = document.createElement('button');
@@ -111,7 +128,6 @@ const view = function(){
         for (let i = 0; i < boardCopy.length; i++){
             createAreaButton(i, boardCopy[i]);
         }
-
     }
 
     const modal = document.querySelector('dialog');
@@ -131,10 +147,13 @@ const view = function(){
         if (unclosable === true){
             modalCloseBtn.remove();
         }
-        if (winner != ''){
+        if (winner === 'tie'){
+            winnerPara.textContent = `A tie!`;
+        }
+        else if (winner != ''){
             winnerDisplay.appendChild(winnerPara);
             winnerPara.textContent = `${winner.getName()} has won`;
-        }
+        } 
     }
 
     // check when changing symbol value
@@ -185,5 +204,5 @@ const view = function(){
     // for initial display
     body.appendChild(grid);
 
-    return {refresh, openModal}
+    return {refresh, openModal, newStats}
 }();
