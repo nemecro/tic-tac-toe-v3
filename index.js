@@ -1,4 +1,4 @@
-let newGame;
+let activeGame;
 
 const gameboard = (function(){
     board = [];
@@ -36,23 +36,17 @@ const Player = function(name, symbol){
 }
 
 const game = function(){
-    let player1;
-    let player2;
-    let winner;
-    let boardCopy;
+    winner = false;
+    let player1, player2;
     let activePlayer;
 
-    function init(p1Input, p2Input){
-        winner = false;
-        player1 = p1Input;
-        player2 = p2Input;
-        boardCopy = gameboard.get();
+    function initPlayers(p1Input, p2Input){
+        [player1, player2] = [p1Input, p2Input];
         activePlayer = player1;
     }
 
-    init();
-
     const checkVictory = function(symbol){
+        const boardCopy = gameboard.get();
         const victoryCombinations = [
             [0, 1, 2],
             [3, 4, 5],
@@ -79,23 +73,22 @@ const game = function(){
         if (winner === activeSymbol){
             // IF THE ACTIVE PLAYER WON THE GAME
             gameboard.clear();
-            gameboard.print();
-            view.refresh();
-            newGame = game(Player('Roland', 'X'), Player('Olga', 'O'));
+            activeGame = game();
+            view.openModal();
         }
         // check for active player and change between rounds
         activePlayer = activePlayer === player1 ? player2 : player1;
     }
 
-    return {playRound}
+    return {playRound, initPlayers}
 };
 
-newGame = game(Player('Roland', 'X'), Player('Olga', 'O'));
+activeGame = game();
+activeGame.initPlayers(Player('Roland', 'X'), Player('Olga', 'O'));
 
 const view = function(){
     const body = document.querySelector('body');
     const grid = document.createElement('div');
-    
 
     function createAreaButton(index, value){
         const button = document.createElement('button');
@@ -105,7 +98,7 @@ const view = function(){
         button.textContent = value;
 
         button.addEventListener('click', () => {
-            newGame.playRound(button.id);
+            activeGame.playRound(button.id);
             refresh();
         })
     }
@@ -119,9 +112,65 @@ const view = function(){
         }
     }
 
-    refresh();
+    const modal = document.querySelector('dialog');
+    const modalCloseBtn = modal.querySelector('#close-modal');
+    const modalSendBtn = modal.querySelector('#submit-modal');
+    const modalOpenBtn = document.querySelector('#new-game');
 
+    function closeModal(){
+        modal.close();
+    }
+
+    function openModal(){
+        modal.showModal();
+    }
+
+    // check when changing symbol value
+    let selectPlayer1Symbol = document.querySelector('#player1-symbol');
+    let selectPlayer2Symbol = document.querySelector('#player2-symbol');
+
+    function changeSymbolValue(e){
+        if (e.target === selectPlayer1Symbol){
+            selectPlayer2Symbol.value = selectPlayer1Symbol.value === 'X' ? 'O' : 'X';
+        } else {
+            selectPlayer1Symbol.value = selectPlayer2Symbol.value === 'O' ? 'X' : 'O';
+        }
+    }
+
+    function sendValues(){
+        const player1Name = modal.querySelector('#player1-name').value;
+        const player2Name = modal.querySelector('#player2-name').value;
+        const player1Symbol = modal.querySelector('#player1-symbol').value;
+        const player2Symbol = modal.querySelector('#player2-symbol').value;
+
+        modal.close();
+        return {
+            player1Name,
+            player2Name,
+            player1Symbol,
+            player2Symbol
+        }
+    }
+
+    let formValues = {};
+
+    modalSendBtn.addEventListener('click', (e) => {
+        formValues = sendValues();
+        gameboard.clear();
+        view.refresh();
+        activeGame = game();
+        activeGame.initPlayers(Player(formValues.player1Name, formValues.player1Symbol), Player(formValues.player2Name, formValues.player2Symbol));
+    });
+
+    modalOpenBtn.addEventListener('click', openModal);
+    modalCloseBtn.addEventListener('click', closeModal);
+
+    selectPlayer1Symbol.addEventListener('change', changeSymbolValue);
+    selectPlayer2Symbol.addEventListener('change', changeSymbolValue);
+
+
+    // for initial display
     body.appendChild(grid);
 
-    return {refresh}
+    return {refresh, openModal}
 }();

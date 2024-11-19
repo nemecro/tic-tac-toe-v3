@@ -7,7 +7,49 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    
+    <dialog>
+        <div id="modal-container">
+            <form action="" method="dialog">
+                <div class="top-modal">
+                    <h2>New game</h2>
+                    <button type="button" id="close-modal" class="btn-red">Close</button>
+                </div>
+                <fieldset>
+                    <legend>Player 1</legend>
+                    <div class="label-group">
+                        <label for="player1-name">Name</label>
+                        <input type="text" name="player1-name" id="player1-name" placeholder="Joe" required autofocus>
+                    </div>
+                    <div class="label-group">
+                        <label for="player1-symbol">Symbol</label>
+                        <select name="player1-symbol" id="player1-symbol">
+                            <option value="X" selected>X</option>
+                            <option value="O">O</option>
+                        </select>
+                    </div>
+                </fieldset>
+                <fieldset>
+                    <legend>Player 2</legend>
+                    <div class="label-group">
+                        <label for="player2-name">Name</label>
+                        <input type="text" name="player2-name" id="player2-name" placeholder="Martin" required>
+                    </div>
+                    <div class="label-group">
+                        <label for="player2-symbol">Symbol</label>
+                        <select name="player2-symbol" id="player2-symbol">
+                            <option value="X">X</option>
+                            <option value="O" selected>O</option>
+                        </select>
+                    </div>
+                </fieldset>
+                <button type="submit" id="submit-modal" class="btn-green">Send</button>
+            </form>
+        </div>
+    </dialog>
+    <main>
+        <h1>Tic tac toe</h1>
+        <button id="new-game">New game</button>
+    </main>
     <script src="index.js"></script>
 </body>
 </html>
