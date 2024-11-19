@@ -73,8 +73,7 @@ const game = function(){
         if (winner === activeSymbol){
             // IF THE ACTIVE PLAYER WON THE GAME
             gameboard.clear();
-            activeGame = game();
-            view.openModal();
+            view.openModal(true);
         }
         // check for active player and change between rounds
         activePlayer = activePlayer === player1 ? player2 : player1;
@@ -82,9 +81,6 @@ const game = function(){
 
     return {playRound, initPlayers}
 };
-
-activeGame = game();
-activeGame.initPlayers(Player('Roland', 'X'), Player('Olga', 'O'));
 
 const view = function(){
     const body = document.querySelector('body');
@@ -121,8 +117,11 @@ const view = function(){
         modal.close();
     }
 
-    function openModal(){
+    function openModal(unclosable){
         modal.showModal();
+        if (unclosable === true){
+            modalCloseBtn.remove();
+        } 
     }
 
     // check when changing symbol value
