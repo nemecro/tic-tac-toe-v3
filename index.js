@@ -1,3 +1,5 @@
+let newGame;
+
 const gameboard = (function(){
     board = [];
     for (let i = 0; i < 9; i++){
@@ -11,13 +13,20 @@ const gameboard = (function(){
         board[index] = value;
     }
 
+    const clear = function(){
+        for (let i = 0; i < 9; i++){
+            // E stand for empty
+            board[i] = 'E';
+        }
+    }
+
     const print = function(){
         console.log(board[0], board[1], board[2]);
         console.log(board[3], board[4], board[5]);
         console.log(board[6], board[7], board[8]);
     }
 
-    return {get, update, print}
+    return {get, update, clear, print}
 })();
 
 const Player = function(name, symbol){
@@ -26,11 +35,24 @@ const Player = function(name, symbol){
     return {getName, getSymbol};
 }
 
-const game = function(player1, player2){
-    let winner = false;
+const game = function(){
+    let player1;
+    let player2;
+    let winner;
+    let boardCopy;
+    let activePlayer;
+
+    function init(p1Input, p2Input){
+        winner = false;
+        player1 = p1Input;
+        player2 = p2Input;
+        boardCopy = gameboard.get();
+        activePlayer = player1;
+    }
+
+    init();
 
     const checkVictory = function(symbol){
-        const boardCopy = gameboard.get();
         const victoryCombinations = [
             [0, 1, 2],
             [3, 4, 5],
@@ -50,14 +72,16 @@ const game = function(player1, player2){
         })
     }
 
-    let activePlayer = player1;
     const playRound = function(area){
         let activeSymbol = activePlayer.getSymbol();
         gameboard.update(area, activeSymbol);
         checkVictory(activeSymbol);
         if (winner === activeSymbol){
-            // DO SOMETHING
-            console.log('won');
+            // IF THE ACTIVE PLAYER WON THE GAME
+            gameboard.clear();
+            gameboard.print();
+            view.refresh();
+            newGame = game(Player('Roland', 'X'), Player('Olga', 'O'));
         }
         // check for active player and change between rounds
         activePlayer = activePlayer === player1 ? player2 : player1;
@@ -66,12 +90,12 @@ const game = function(player1, player2){
     return {playRound}
 };
 
-const newGame = game(Player('Roland', 'X'), Player('Olga', 'O'));
+newGame = game(Player('Roland', 'X'), Player('Olga', 'O'));
 
 const view = function(){
     const body = document.querySelector('body');
     const grid = document.createElement('div');
-    const boardCopy = gameboard.get();
+    
 
     function createAreaButton(index, value){
         const button = document.createElement('button');
@@ -81,13 +105,13 @@ const view = function(){
         button.textContent = value;
 
         button.addEventListener('click', () => {
-            console.log('clicked' + button.id);
             newGame.playRound(button.id);
             refresh();
         })
     }
 
     function refresh(){
+        const boardCopy = gameboard.get();
         const areaBtns = [...document.querySelectorAll('.areaBtn')];
         areaBtns.forEach(btn => btn.remove());
         for (let i = 0; i < boardCopy.length; i++){
@@ -99,4 +123,5 @@ const view = function(){
 
     body.appendChild(grid);
 
+    return {refresh}
 }();
