@@ -73,7 +73,7 @@ const game = function(){
         if (winner === activeSymbol){
             // IF THE ACTIVE PLAYER WON THE GAME
             gameboard.clear();
-            view.openModal(true);
+            view.openModal(true, activePlayer);
         }
         // check for active player and change between rounds
         activePlayer = activePlayer === player1 ? player2 : player1;
@@ -88,6 +88,7 @@ const view = function(){
 
     function createAreaButton(index, value){
         const button = document.createElement('button');
+        button.type = 'button';
         grid.appendChild(button);
         button.id = index;
         button.classList.add('areaBtn');
@@ -112,16 +113,24 @@ const view = function(){
     const modalCloseBtn = modal.querySelector('#close-modal');
     const modalSendBtn = modal.querySelector('#submit-modal');
     const modalOpenBtn = document.querySelector('#new-game');
+    const modalForm = modal.querySelector('form');
+
+    const winnerDisplay = modal.querySelector('#winner-display');
+    const winnerPara = document.createElement('p');
 
     function closeModal(){
         modal.close();
     }
 
-    function openModal(unclosable){
+    function openModal(unclosable, winner = ''){
         modal.showModal();
         if (unclosable === true){
             modalCloseBtn.remove();
-        } 
+        }
+        if (winner != ''){
+            winnerDisplay.appendChild(winnerPara);
+            winnerPara.textContent = `${winner.getName()} has won`;
+        }
     }
 
     // check when changing symbol value
@@ -153,7 +162,8 @@ const view = function(){
 
     let formValues = {};
 
-    modalSendBtn.addEventListener('click', (e) => {
+    modalForm.addEventListener('submit', (e) => {
+        e.preventDefault();
         formValues = sendValues();
         gameboard.clear();
         view.refresh();
