@@ -68,10 +68,11 @@ const game = function(){
                 boardCopy[victoryCondition[0]] === symbol && boardCopy[victoryCondition[1]] === symbol && boardCopy[victoryCondition[2]] === symbol
             ){
                 winner = symbol;
-            } else if (round === 9){
-                winner = 'tie';
-            }
+            } 
         })
+        if (round > 8 && winner === false){
+            winner = 'tie';
+        }
     }
 
     const playRound = function(area){
