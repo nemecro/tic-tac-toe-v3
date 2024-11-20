@@ -86,7 +86,6 @@
     margin: 0 auto;
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    border: 2px solid black;
     width: 80%;
   }
 
@@ -95,6 +94,22 @@
     height: 20vh;
     font-size: 3rem;
     font-weight: 700;
+  }
+
+  .areaBtn:nth-child(1), .areaBtn:nth-child(2), .areaBtn:nth-child(3){
+    border-top: 4px solid black;
+  }
+
+  .areaBtn:nth-child(1), .areaBtn:nth-child(4), .areaBtn:nth-child(7){
+    border-left: 4px solid black;
+  }
+
+  .areaBtn:nth-child(7), .areaBtn:nth-child(8), .areaBtn:nth-child(9){
+    border-bottom: 4px solid black;
+  }
+
+  .areaBtn:nth-child(3), .areaBtn:nth-child(6), .areaBtn:nth-child(9){
+    border-right: 4px solid black;
   }
 
   dialog {
@@ -127,6 +142,13 @@
 
     gap: 1rem;
   }
+
+  #winner-display {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: green;
+    text-align: center;
+}
 
   .top-modal {
     display: flex;
