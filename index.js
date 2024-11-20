@@ -4,7 +4,7 @@ const gameboard = (function(){
     board = [];
     for (let i = 0; i < 9; i++){
         // E stand for empty
-        board.push('E');
+        board.push('');
     }
 
     const get = () => board;
@@ -16,7 +16,7 @@ const gameboard = (function(){
     const clear = function(){
         for (let i = 0; i < 9; i++){
             // E stand for empty
-            board[i] = 'E';
+            board[i] = '';
         }
     }
 
@@ -97,6 +97,7 @@ const game = function(){
 const view = function(){
     const body = document.querySelector('body');
     const grid = document.createElement('div');
+    grid.id = 'game-grid';
     const activePlayerPara = body.querySelector('#player');
     const currentRound = body.querySelector('#round');
 
@@ -114,7 +115,7 @@ const view = function(){
         button.textContent = value;
 
         // only add event listener to buttons that don't have value yet
-        if (button.textContent === 'E'){
+        if (button.textContent === ''){
             button.addEventListener('click', () => {
                 activeGame.playRound(button.id);
             })
