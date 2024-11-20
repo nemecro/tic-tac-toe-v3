@@ -40,12 +40,15 @@ const game = function(){
     let player1, player2;
     let activePlayer;
     let round = 1;
+    let activeSymbol;
 
     function initPlayers(p1Input, p2Input){
         [player1, player2] = [p1Input, p2Input];
         activePlayer = player1;
+        activeSymbol = player1.getSymbol();
         round = 1;
         view.newStats(activePlayer.getName(), round);
+        view.hoverSymbolButton(activePlayer.getSymbol());
     }
 
     const checkVictory = function(symbol){
@@ -72,7 +75,6 @@ const game = function(){
     }
 
     const playRound = function(area){
-        let activeSymbol = activePlayer.getSymbol();
         gameboard.update(area, activeSymbol);
         // necessary to only add event listeners for buttons that do not have value
         view.refresh();
@@ -89,6 +91,8 @@ const game = function(){
         activePlayer = activePlayer === player1 ? player2 : player1;
         round++;
         view.newStats(activePlayer.getName(), round);
+        activeSymbol = activePlayer.getSymbol();
+        view.hoverSymbolButton(activeSymbol);
     }
 
     return {playRound, initPlayers}
@@ -116,10 +120,23 @@ const view = function(){
 
         // only add event listener to buttons that don't have value yet
         if (button.textContent === ''){
+            button.classList.add('empty');
             button.addEventListener('click', () => {
                 activeGame.playRound(button.id);
             })
         }
+    }
+
+    function hoverSymbolButton(activeSymbol){
+        const emptyBtns = [...document.querySelectorAll('.empty')];
+        emptyBtns.forEach(btn => {
+            btn.addEventListener('mouseover', () => {
+                btn.textContent = activeSymbol;
+            })
+            btn.addEventListener('mouseout', () => {
+                btn.textContent = '';
+            })
+        })
     }
 
     function refresh(){
@@ -149,6 +166,7 @@ const view = function(){
             modalCloseBtn.remove();
         }
         if (winner === 'tie'){
+            winnerDisplay.appendChild(winnerPara);
             winnerPara.textContent = `A tie!`;
         }
         else if (winner != ''){
@@ -205,5 +223,5 @@ const view = function(){
     // for initial display
     body.appendChild(grid);
 
-    return {refresh, openModal, newStats}
+    return {refresh, openModal, newStats, hoverSymbolButton}
 }();
